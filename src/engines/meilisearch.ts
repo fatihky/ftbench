@@ -2,32 +2,32 @@ import { logger } from "../logger";
 import { Query } from "../query";
 import { SearchEngine } from "./search-engine";
 
-export interface QuickwitSearchEngineParams {
+export interface MeiliSearchSearchEngineParams {
   address: string;
   indexName: string;
 }
 
-const childLogger = logger.child({}, { msgPrefix: "quickwit: " });
+const childLogger = logger.child({}, { msgPrefix: "meilisearch: " });
 
-export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
+export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
   private readonly address: string;
   private readonly indexName: string;
 
-  constructor(params: QuickwitSearchEngineParams) {
+  constructor(params: MeiliSearchSearchEngineParams) {
     this.address = params.address;
     this.indexName = params.indexName;
   }
 
   engineName(): string {
-    return "quickwit";
+    return "meilisearch";
   }
 
   async execute(query: Query): Promise<void> {
     const queryTerm = "music";
     const resp = await fetch(
-      `${this.address}/api/v1/${
-        this.indexName
-      }/search?query=${encodeURIComponent(queryTerm)}`
+      `${this.address}/indexes/${this.indexName}/search?q=${encodeURIComponent(
+        queryTerm
+      )}`
     );
 
     if (resp.status !== 200) {
@@ -38,10 +38,10 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
 
   async insertBatch(docs: Doc[]): Promise<void> {
     const resp = await fetch(
-      `${this.address}/api/v1/${this.indexName}/ingest`,
+      `${this.address}/indexes/${this.indexName}/documents?primaryKey=id`,
       {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/x-ndjson" },
         body: docs.map((doc) => JSON.stringify(doc)).join("\n"),
       }
     );

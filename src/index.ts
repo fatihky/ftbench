@@ -3,13 +3,14 @@ import { ArticleGenerator } from "./document-generators/article-generator";
 import { WikipediaArticleAbstractGenerator } from "./document-generators/wikipedia-article-abstract-generator";
 import { Article } from "./documents/article";
 import { WikipediaArticleAbstract } from "./documents/wikipedia-article-abstract";
+import { MeiliSearchSearchEngine } from "./engines/meilisearch";
 import { QuickwitSearchEngine } from "./engines/quickwit";
 import { logger } from "./logger";
 import { allQueries } from "./query";
 
 const quickwitArticles = new QuickwitSearchEngine<Article>({
   indexName: "articles",
-  address: "http://localhost:7280/api/v1",
+  address: "http://localhost:7280",
 });
 const queries = allQueries;
 const articleBenchmark = Benchmark.create<Article>({
@@ -28,14 +29,22 @@ const wikipediaArticleAbstractGenerator = new WikipediaArticleAbstractGenerator(
 const quickwitWikipediaArticleAbstract =
   new QuickwitSearchEngine<WikipediaArticleAbstract>({
     indexName: "wikipedia-article-abstract",
-    address: "http://localhost:7280/api/v1",
+    address: "http://localhost:7280",
+  });
+const meilisearchWikipediaArticleAbstract =
+  new MeiliSearchSearchEngine<WikipediaArticleAbstract>({
+    indexName: "wikipedia-article-abstract",
+    address: "http://localhost:7700",
   });
 const wikipediaArticleAbstractBenchmark =
   Benchmark.create<WikipediaArticleAbstract>({
     ignoreUnsupportedQueries: true,
     queries,
-    engines: [quickwitWikipediaArticleAbstract],
-    documentCount: 200,
+    engines: [
+      meilisearchWikipediaArticleAbstract,
+      quickwitWikipediaArticleAbstract,
+    ],
+    documentCount: 200000,
     documentGenerator: wikipediaArticleAbstractGenerator,
     queryExecutorParams: { concurrency: 20, repeats: 200 },
   });
