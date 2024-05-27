@@ -24,6 +24,7 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
 
   async clearExistingDocuments(): Promise<void> {
     childLogger.debug("Clearing existing documents");
+
     const resp = await fetch(
       `${this.address}/api/v1/indexes/${this.indexName}/clear`,
       {

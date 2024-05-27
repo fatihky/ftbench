@@ -23,6 +23,8 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
   }
 
   async clearExistingDocuments(): Promise<void> {
+    childLogger.debug("Clearing existing documents");
+
     const resp = await fetch(
       `${this.address}/indexes/${this.indexName}/documents`,
       { method: "DELETE" }

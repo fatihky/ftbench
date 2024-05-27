@@ -46,7 +46,7 @@ const wikipediaArticleAbstractBenchmark =
     ],
     documentCount: 200000,
     documentGenerator: wikipediaArticleAbstractGenerator,
-    queryExecutorParams: { concurrency: 20, repeats: 200 },
+    queryExecutorParams: { concurrency: 50, repeats: 1000 },
   });
 
 async function main() {
