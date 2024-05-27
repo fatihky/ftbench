@@ -51,7 +51,7 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
       )}`
     );
 
-    if (resp.status !== 200 && resp.status !== 202) {
+    if (resp.status !== 200) {
       childLogger.debug("got a non-successful status code: %d", resp.status);
       childLogger.debug("response body: %O", await resp.json());
     }
@@ -67,7 +67,7 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
       }
     );
 
-    if (resp.status !== 200) {
+    if (resp.status !== 200 && resp.status !== 202) {
       childLogger.debug("got a non-successful status code: %d", resp.status);
       childLogger.debug("response body: %O", await resp.json());
     }
