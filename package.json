@@ -4,6 +4,7 @@
   "description": "Full-Text Search engine/server benchmarking tool.",
   "main": "dist/index.js",
   "scripts": {
+    "start": "ts-node src/index.ts",
     "test": "vitest"
   },
   "repository": {
