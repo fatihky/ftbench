@@ -18,7 +18,7 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
     this.indexName = params.indexName;
   }
 
-  engineName(): string {
+  getEngineName(): string {
     return "quickwit";
   }
 

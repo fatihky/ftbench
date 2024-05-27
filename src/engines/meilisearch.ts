@@ -18,7 +18,7 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
     this.indexName = params.indexName;
   }
 
-  engineName(): string {
+  getEngineName(): string {
     return "meilisearch";
   }
 

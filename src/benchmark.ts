@@ -38,7 +38,7 @@ export class Benchmark<Doc> {
 
           if (!supported) {
             throw new Error(
-              `Query: ${query} is not supported by "${engine.engineName()}"`
+              `Query: ${query} is not supported by "${engine.getEngineName()}"`
             );
           }
         }
@@ -76,7 +76,7 @@ export class Benchmark<Doc> {
       if (!engine.supportedQueries().includes(query)) {
         logger.info(
           "Engine %s does not support query %s, skipping...",
-          engine.engineName(),
+          engine.getEngineName(),
           query
         );
         continue;
@@ -87,13 +87,13 @@ export class Benchmark<Doc> {
 
       logger.info(
         "Execution is done for the engine %s in %d ms",
-        engine.engineName(),
+        engine.getEngineName(),
         totalDuration
       );
 
       logger.info(
         "Engine: '%s', query time percentiles: %%5=%dms, %%20=%dms, %%50=%dms, %%75=%dms, %%90=%dms, %%95=%dms, %%99=%dms, %%100=%dms",
-        engine.engineName(),
+        engine.getEngineName(),
         percentile(5, queryDurations),
         percentile(20, queryDurations),
         percentile(50, queryDurations),
