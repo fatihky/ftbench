@@ -22,6 +22,27 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
     return "meilisearch";
   }
 
+  async clearExistingDocuments(): Promise<void> {
+    const resp = await fetch(
+      `${this.address}/indexes/${this.indexName}/documents`,
+      { method: "DELETE" }
+    );
+
+    if (resp.status !== 202) {
+      let body: any = null;
+
+      try {
+        body = await resp.json();
+      } catch {}
+
+      throw new Error(
+        `meilisearch: Cannot clear the index ${
+          this.indexName
+        }. Response status=${resp.status}, body=${JSON.stringify(body)}`
+      );
+    }
+  }
+
   async execute(query: Query): Promise<void> {
     const queryTerm = "music";
     const resp = await fetch(

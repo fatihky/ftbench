@@ -4,6 +4,7 @@ import { SearchEngine } from "./engines/search-engine";
 import { logger } from "./logger";
 import { Query } from "./query";
 import { QueryExecutor, QueryExecutorParams } from "./query-executor";
+import { en } from "@faker-js/faker";
 
 export interface BenchmarkParams<Doc> {
   engines: SearchEngine<Doc>[];
@@ -50,6 +51,15 @@ export class Benchmark<Doc> {
 
   async run() {
     logger.info("Benchmark started");
+
+    logger.info("Clearing indexes");
+
+    for (const engine of this.engines) {
+      await engine.clearExistingDocuments();
+    }
+
+    logger.info("Done clearing indexes");
+
     logger.info("Inserting documents");
     await this.insertDocs();
     logger.info("Done inserting documents");

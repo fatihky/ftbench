@@ -22,6 +22,26 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
     return "quickwit";
   }
 
+  async clearExistingDocuments(): Promise<void> {
+    childLogger.debug("Clearing existing documents");
+    const resp = await fetch(
+      `${this.address}/api/v1/indexes/${this.indexName}/clear`,
+      {
+        method: "PUT",
+      }
+    );
+
+    if (resp.status !== 200) {
+      const body = await resp.json();
+
+      throw new Error(
+        `quickwit: Cannot clear the index ${this.indexName}. Response status=${
+          resp.status
+        }, body=${JSON.stringify(body)}`
+      );
+    }
+  }
+
   async execute(query: Query): Promise<void> {
     const queryTerm = "music";
     const resp = await fetch(
