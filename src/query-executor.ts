@@ -17,8 +17,8 @@ export interface QueryExecutionResult<Doc> {
 }
 
 export class QueryExecutor {
-  private readonly concurrency: number;
-  private readonly repeats: number;
+  readonly concurrency: number;
+  readonly repeats: number;
 
   constructor({ concurrency, repeats }: QueryExecutorParams) {
     this.concurrency = concurrency;

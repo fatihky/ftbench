@@ -22,7 +22,19 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
     return "quickwit";
   }
 
-  async execute(query: Query): Promise<void> {}
+  async execute(query: Query): Promise<void> {
+    const queryTerm = "music";
+    const resp = await fetch(
+      `${this.address}/${this.indexName}/search?query=${encodeURIComponent(
+        queryTerm
+      )}`
+    );
+
+    if (resp.status !== 200) {
+      childLogger.debug("got a non-successful status code: %d", resp.status);
+      childLogger.debug("response body: %O", await resp.json());
+    }
+  }
 
   async insertBatch(docs: Doc[]): Promise<void> {
     const resp = await fetch(`${this.address}/${this.indexName}/ingest`, {

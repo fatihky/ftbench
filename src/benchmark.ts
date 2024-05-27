@@ -54,7 +54,11 @@ export class Benchmark<Doc> {
     await this.insertDocs();
     logger.info("Done inserting documents");
 
-    logger.info("Executing queries");
+    logger.info(
+      "Executing queries. concurrency=%d, repeats=%d",
+      this.queryExecutor.concurrency,
+      this.queryExecutor.repeats
+    );
     for (const query of this.queries) {
       logger.info("Executing query: %s", query);
       await this.executeQuery(query);

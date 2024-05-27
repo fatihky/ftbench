@@ -37,7 +37,7 @@ const wikipediaArticleAbstractBenchmark =
     engines: [quickwitWikipediaArticleAbstract],
     documentCount: 200,
     documentGenerator: wikipediaArticleAbstractGenerator,
-    queryExecutorParams: { concurrency: 2000, repeats: 20000 },
+    queryExecutorParams: { concurrency: 20, repeats: 200 },
   });
 
 async function main() {
