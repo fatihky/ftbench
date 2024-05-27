@@ -1,0 +1,37 @@
+{
+  "name": "ftbench",
+  "version": "0.1.0",
+  "description": "Full-Text Search engine/server benchmarking tool.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fatihky/ftbench.git"
+  },
+  "keywords": [
+    "full-text",
+    "benchmark"
+  ],
+  "author": "Fatih Kaya <1994274@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fatihky/ftbench/issues"
+  },
+  "homepage": "https://github.com/fatihky/ftbench#readme",
+  "packageManager": "pnpm@9.1.2+sha256.19c17528f9ca20bd442e4ca42f00f1b9808a9cb419383cd04ba32ef19322aba7",
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/xml-flow": "^1.0.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "percentile": "^1.6.0",
+    "pino": "^9.1.0",
+    "pino-pretty": "^11.1.0",
+    "xml-flow": "^1.0.4"
+  }
+}
