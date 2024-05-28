@@ -1,56 +1,38 @@
-import { Benchmark } from "./benchmark";
-import { ArticleGenerator } from "./document-generators/article-generator";
-import { WikipediaArticleAbstractGenerator } from "./document-generators/wikipedia-article-abstract-generator";
-import { Article } from "./documents/article";
-import { WikipediaArticleAbstract } from "./documents/wikipedia-article-abstract";
-import { MeiliSearchSearchEngine } from "./engines/meilisearch";
-import { QuickwitSearchEngine } from "./engines/quickwit";
+import { Command } from "@commander-js/extra-typings";
+import { BenchmarkFactory } from "./benchmark-factory";
 import { logger } from "./logger";
-import { allQueries } from "./query";
 
-const quickwitArticles = new QuickwitSearchEngine<Article>({
-  indexName: "articles",
-  address: "http://localhost:7280",
-});
-const queries = allQueries;
-const articleBenchmark = Benchmark.create<Article>({
-  ignoreUnsupportedQueries: false,
-  queries,
-  engines: [quickwitArticles],
-  documentCount: 100000,
-  documentGenerator: new ArticleGenerator(),
-  queryExecutorParams: { concurrency: 10, repeats: 10 },
-});
+interface BenchmarkCommandArguments {
+  benchmark: string;
+  concurrency: string;
+  requests: string;
+}
 
-const wikipediaArticleAbstractGenerator = new WikipediaArticleAbstractGenerator(
-  "/Users/fatih/Downloads/enwiki-20220820-abstract.xml"
-);
+const program = new Command()
+  .command("benchmark", { isDefault: true })
+  .option(
+    "-b, --benchmark <wikipedia-article-abstract | articles>",
+    undefined,
+    "wikipedia-article-abstract"
+  )
+  .option("-c, --concurrency <number>", undefined, "50")
+  .option("-r, --requests <number>", "Search requests to be executed.", "1000")
+  .action(runBenchmark);
 
-const quickwitWikipediaArticleAbstract =
-  new QuickwitSearchEngine<WikipediaArticleAbstract>({
-    indexName: "wikipedia-article-abstract",
-    address: "http://localhost:7280",
+async function runBenchmark(opts: BenchmarkCommandArguments) {
+  const requests = Number(opts.requests);
+  const concurrency = Number(opts.concurrency);
+  const benchmark = BenchmarkFactory.create({
+    benchmark: opts.benchmark,
+    concurrency,
+    requests,
   });
-const meilisearchWikipediaArticleAbstract =
-  new MeiliSearchSearchEngine<WikipediaArticleAbstract>({
-    indexName: "wikipedia-article-abstract",
-    address: "http://localhost:7700",
-  });
-const wikipediaArticleAbstractBenchmark =
-  Benchmark.create<WikipediaArticleAbstract>({
-    ignoreUnsupportedQueries: true,
-    queries,
-    engines: [
-      meilisearchWikipediaArticleAbstract,
-      quickwitWikipediaArticleAbstract,
-    ],
-    documentCount: 200000,
-    documentGenerator: wikipediaArticleAbstractGenerator,
-    queryExecutorParams: { concurrency: 50, repeats: 1000 },
-  });
+
+  await benchmark.run();
+}
 
 async function main() {
-  await wikipediaArticleAbstractBenchmark.run();
+  program.parse();
 }
 
 main().catch((err) => {
