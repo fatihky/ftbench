@@ -28,5 +28,6 @@ Options:
   -b, --benchmark <wikipedia-article-abstract | articles>   (default: "wikipedia-article-abstract")
   -c, --concurrency <number>                                (default: "50")
   -r, --requests <number>                                  Search requests to be executed. (default: "1000")
+  --dataset-wikipedia-article-abstract-path <string>               Path to Wikipedia article abstract xml dump
   -h, --help                                               display help for command
 ```

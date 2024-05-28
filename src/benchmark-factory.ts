@@ -1,3 +1,4 @@
+import * as assert from "assert";
 import { Benchmark } from "./benchmark";
 import { ArticleGenerator } from "./document-generators/article-generator";
 import { WikipediaArticleAbstractGenerator } from "./document-generators/wikipedia-article-abstract-generator";
@@ -11,6 +12,11 @@ interface BenchmarkFactoryParams {
   benchmark: string;
   requests: number;
   concurrency: number;
+
+  datasets?: {
+    // wikipedia article abstract xml dump path
+    wikipediaArticleAbstractPath?: string;
+  };
 }
 
 export class BenchmarkFactory {
@@ -37,6 +43,8 @@ export class BenchmarkFactory {
       }
 
       case "wikipedia-article-abstract": {
+        const wikipediaArticleAbstractPath =
+          params.datasets?.wikipediaArticleAbstractPath;
         const quickwitWikipediaArticleAbstract =
           new QuickwitSearchEngine<WikipediaArticleAbstract>({
             indexName: "wikipedia-article-abstract",
@@ -47,10 +55,11 @@ export class BenchmarkFactory {
             indexName: "wikipedia-article-abstract",
             address: "http://localhost:7700",
           });
+
+        assert(wikipediaArticleAbstractPath);
+
         const wikipediaArticleAbstractGenerator =
-          new WikipediaArticleAbstractGenerator(
-            "/Users/fatih/Downloads/enwiki-20220820-abstract.xml"
-          );
+          new WikipediaArticleAbstractGenerator(wikipediaArticleAbstractPath);
 
         return Benchmark.create<WikipediaArticleAbstract>({
           ignoreUnsupportedQueries: true,
