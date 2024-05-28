@@ -6,5 +6,5 @@ export interface SearchEngine<Document> {
   insertBatch(batch: Document[]): Promise<void>;
   supportedQueries(): Query[];
   execute(query: Query): Promise<void>;
-  waitIndexing(): Promise<void>;
+  waitIndexing(params: { numDocs: number }): Promise<void>;
 }

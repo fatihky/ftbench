@@ -144,6 +144,8 @@ export class Benchmark<Doc> {
     const docs = await this.generateDocs();
     const chunks = makeChunks(docs, 1000);
 
+    logger.debug("Inserting %d docs as %d chunks.", docs.length, chunks.length);
+
     for (const chunk of chunks) {
       await Promise.all(
         this.engines.map((engine) => engine.insertBatch(chunk))
@@ -152,7 +154,11 @@ export class Benchmark<Doc> {
 
     logger.debug("Wait engines to index the documents.");
 
-    await Promise.all(this.engines.map((engine) => engine.waitIndexing()));
+    await Promise.all(
+      this.engines.map((engine) =>
+        engine.waitIndexing({ numDocs: docs.length })
+      )
+    );
   }
 }
 

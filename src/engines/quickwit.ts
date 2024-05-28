@@ -7,6 +7,18 @@ export interface QuickwitSearchEngineParams {
   indexName: string;
 }
 
+interface QuickwitIndexDescribeBody {
+  index_id: string;
+  index_uri: string;
+  num_published_splits: number;
+  size_published_splits: number;
+  num_published_docs: number;
+  size_published_docs_uncompressed: number;
+  timestamp_field_name: string | null;
+  min_timestamp: string | null;
+  max_timestamp: string | null;
+}
+
 const childLogger = logger.child({}, { msgPrefix: "quickwit: " });
 
 export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
@@ -77,5 +89,40 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
     return [Query.SingleWord];
   }
 
-  async waitIndexing(): Promise<void> {}
+  async waitIndexing({ numDocs }: { numDocs: number }): Promise<void> {
+    for (;;) {
+      const resp = await fetch(
+        `${this.address}/api/v1/indexes/${this.indexName}/describe`
+      );
+
+      if (resp.status !== 200) {
+        let body: unknown = null;
+
+        childLogger.debug(
+          "Cannot check indexing status: Got a non-successful status code: %d",
+          resp.status
+        );
+
+        try {
+          body = await resp.json();
+        } catch {}
+
+        childLogger.debug("response body: %O", await resp.json());
+      }
+
+      const body: QuickwitIndexDescribeBody = await resp.json();
+
+      if (body.num_published_docs >= numDocs) {
+        break;
+      }
+
+      childLogger.debug(
+        "All docs not yet indexes. %d/%d of documents are indexed. Waiting all documents to be indexed.",
+        body.num_published_docs,
+        numDocs
+      );
+
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
 }
