@@ -39,9 +39,7 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
 
     const resp = await fetch(
       `${this.address}/api/v1/indexes/${this.indexName}/clear`,
-      {
-        method: "PUT",
-      }
+      { method: "PUT" }
     );
 
     if (resp.status !== 200) {
@@ -53,6 +51,8 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
         }, body=${JSON.stringify(body)}`
       );
     }
+
+    childLogger.info("Done clearing existing documents");
   }
 
   async execute(query: Query): Promise<void> {

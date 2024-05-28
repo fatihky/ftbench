@@ -25,26 +25,35 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
   async clearExistingDocuments(): Promise<void> {
     childLogger.info("Clearing existing documents");
 
-    const resp = await fetch(
-      `${this.address}/indexes/${this.indexName}/documents`,
-      { method: "DELETE" }
-    );
-
-    if (resp.status !== 202) {
-      let body: any = null;
-
-      try {
-        body = await resp.json();
-      } catch {}
-
-      throw new Error(
-        `meilisearch: Cannot clear the index ${
-          this.indexName
-        }. Response status=${resp.status}, body=${JSON.stringify(body)}`
+    try {
+      const resp = await fetch(
+        `${this.address}/indexes/${this.indexName}/documents`,
+        { method: "DELETE" }
       );
-    }
 
-    childLogger.info("Done clearing existing documents");
+      if (resp.status !== 202) {
+        let body: any = null;
+
+        try {
+          body = await resp.json();
+        } catch {}
+
+        throw new Error(
+          `meilisearch: Cannot clear the index ${
+            this.indexName
+          }. Response status=${resp.status}, body=${JSON.stringify(body)}`
+        );
+      }
+
+      childLogger.info("Done clearing existing documents");
+    } catch (err) {
+      childLogger.error(
+        "Cannot clear existing documents: %s",
+        err instanceof Error ? err.message : JSON.stringify(err)
+      );
+
+      throw new Error("meilisearch: Cannot clear existing documents.");
+    }
   }
 
   async execute(query: Query): Promise<void> {
