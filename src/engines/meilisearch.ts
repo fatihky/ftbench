@@ -71,6 +71,8 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
   }
 
   async insertBatch(docs: Doc[]): Promise<void> {
+    childLogger.debug("Inserting batch of %d documents...", docs.length);
+
     const resp = await fetch(
       `${this.address}/indexes/${this.indexName}/documents?primaryKey=id`,
       {
@@ -84,6 +86,8 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
       childLogger.debug("got a non-successful status code: %d", resp.status);
       childLogger.debug("response body: %O", await resp.json());
     }
+
+    childLogger.debug("Done inserting batch of %d documents...", docs.length);
   }
 
   async waitIndexing() {

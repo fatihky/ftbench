@@ -70,6 +70,8 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
   }
 
   async insertBatch(docs: Doc[]): Promise<void> {
+    childLogger.debug("Inserting batch of %d documents...", docs.length);
+
     const resp = await fetch(
       `${this.address}/api/v1/${this.indexName}/ingest`,
       {
@@ -83,6 +85,8 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
       childLogger.debug("got a non-successful status code: %d", resp.status);
       childLogger.debug("response body: %O", await resp.json());
     }
+
+    childLogger.debug("Done inserting batch of %d documents...", docs.length);
   }
 
   supportedQueries(): Query[] {
