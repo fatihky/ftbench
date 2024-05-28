@@ -38,23 +38,27 @@ export class WikipediaArticleAbstractGenerator
     await new Promise((resolve, reject) => {
       const readStream = createReadStream(this.xmlDumpPath);
       const xmlStream = flow(readStream);
+      let handleDocs = true;
 
       xmlStream.on("error", reject);
       xmlStream.on("end", resolve);
       readStream.on("close", resolve);
 
       xmlStream.on("tag:doc", (raw: RawDoc) => {
-        docs.push({
-          id: this.nextId++,
-          abstract: raw.abstract,
-          links: Array.isArray(raw.links)
-            ? raw.links.map(rawLinkToSublink)
-            : [rawLinkToSublink(raw.links)],
-          title: raw.title,
-          url: raw.url,
-        });
+        if (handleDocs) {
+          docs.push({
+            id: this.nextId++,
+            abstract: raw.abstract,
+            links: Array.isArray(raw.links)
+              ? raw.links.map(rawLinkToSublink)
+              : [rawLinkToSublink(raw.links)],
+            title: raw.title,
+            url: raw.url,
+          });
+        }
 
         if (count && docs.length >= count) {
+          handleDocs = false;
           readStream.close();
         }
       });
