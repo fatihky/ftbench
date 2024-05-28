@@ -149,6 +149,10 @@ export class Benchmark<Doc> {
         this.engines.map((engine) => engine.insertBatch(chunk))
       );
     }
+
+    logger.debug("Wait engines to index the documents.");
+
+    await Promise.all(this.engines.map((engine) => engine.waitIndexing()));
   }
 }
 

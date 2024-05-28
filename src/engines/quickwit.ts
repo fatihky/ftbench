@@ -76,4 +76,6 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
   supportedQueries(): Query[] {
     return [Query.SingleWord];
   }
+
+  async waitIndexing(): Promise<void> {}
 }

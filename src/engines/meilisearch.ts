@@ -75,6 +75,29 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
     }
   }
 
+  async waitIndexing() {
+    childLogger.debug("Wait for indexing to be completed");
+
+    for (;;) {
+      const resp = await fetch(
+        `${this.address}/tasks?statuses=enqueued,processing`
+      );
+
+      const body: { results: unknown[] } = await resp.json();
+
+      if (body.results.length === 0) {
+        break;
+      }
+
+      childLogger.debug(
+        "%d tasks remaining, waiting them to be completed.",
+        body.results.length
+      );
+
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+
   supportedQueries(): Query[] {
     return [Query.SingleWord];
   }
