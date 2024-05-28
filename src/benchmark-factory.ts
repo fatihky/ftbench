@@ -13,6 +13,8 @@ interface BenchmarkFactoryParams {
   requests: number;
   concurrency: number;
 
+  documents?: number;
+
   datasets?: {
     // wikipedia article abstract xml dump path
     wikipediaArticleAbstractPath?: string;
@@ -36,7 +38,7 @@ export class BenchmarkFactory {
           ignoreUnsupportedQueries: false,
           queries: allQueries,
           engines: [meilisearchArticles, quickwitArticles],
-          documentCount: 100000,
+          documentCount: params.documents ?? 100000,
           documentGenerator: new ArticleGenerator(),
           queryExecutorParams: { concurrency: 10, repeats: 10 },
         });
@@ -68,7 +70,7 @@ export class BenchmarkFactory {
             meilisearchWikipediaArticleAbstract,
             quickwitWikipediaArticleAbstract,
           ],
-          documentCount: 200000,
+          documentCount: params.documents ?? 200000,
           documentGenerator: wikipediaArticleAbstractGenerator,
           queryExecutorParams: {
             concurrency: params.concurrency,

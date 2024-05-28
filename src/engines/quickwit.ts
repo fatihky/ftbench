@@ -90,6 +90,8 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
   }
 
   async waitIndexing({ numDocs }: { numDocs: number }): Promise<void> {
+    childLogger.debug("Wait for indexing to be done");
+
     for (;;) {
       const resp = await fetch(
         `${this.address}/api/v1/indexes/${this.indexName}/describe`
@@ -124,5 +126,7 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
 
       await new Promise((r) => setTimeout(r, 1000));
     }
+
+    childLogger.debug("Indexing is done.");
   }
 }

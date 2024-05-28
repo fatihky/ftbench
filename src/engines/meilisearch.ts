@@ -43,6 +43,8 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
         }. Response status=${resp.status}, body=${JSON.stringify(body)}`
       );
     }
+
+    childLogger.info("Done clearing existing documents");
   }
 
   async execute(query: Query): Promise<void> {
@@ -76,7 +78,7 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
   }
 
   async waitIndexing() {
-    childLogger.debug("Wait for indexing to be completed");
+    childLogger.debug("Wait for indexing to be done");
 
     for (;;) {
       const resp = await fetch(
@@ -96,6 +98,8 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
 
       await new Promise((r) => setTimeout(r, 1000));
     }
+
+    childLogger.debug("Indexing is done.");
   }
 
   supportedQueries(): Query[] {

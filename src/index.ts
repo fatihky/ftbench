@@ -6,6 +6,7 @@ interface BenchmarkCommandArguments {
   benchmark: string;
   concurrency: string;
   requests: string;
+  documents?: string;
 
   datasetWikipediaArticleAbstractPath?: string;
 }
@@ -19,6 +20,7 @@ async function runBenchmark(opts: BenchmarkCommandArguments) {
     datasets: {
       wikipediaArticleAbstractPath: opts.datasetWikipediaArticleAbstractPath,
     },
+    documents: opts.documents ? Number(opts.documents) : undefined,
     requests,
   });
 
@@ -42,5 +44,6 @@ new Command()
     "--dataset-wikipedia-article-abstract-path <string>",
     "Path to Wikipedia article abstract xml dump"
   )
+  .option("--documents <number>")
   .action(runBenchmark)
   .parse();
