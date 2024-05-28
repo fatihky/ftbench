@@ -20,3 +20,13 @@ After setting up your search engines, you can fire a benchmark with:
 ```shell
 npm start
 ```
+
+```txt
+Usage:  benchmark [options]
+
+Options:
+  -b, --benchmark <wikipedia-article-abstract | articles>   (default: "wikipedia-article-abstract")
+  -c, --concurrency <number>                                (default: "50")
+  -r, --requests <number>                                  Search requests to be executed. (default: "1000")
+  -h, --help                                               display help for command
+```
