@@ -110,6 +110,8 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
         } catch {}
 
         childLogger.debug("response body: %O", await resp.json());
+
+        throw new Error("quickwit: index describe request failed.");
       }
 
       const body: QuickwitIndexDescribeBody = await resp.json();
@@ -118,11 +120,7 @@ export class QuickwitSearchEngine<Doc> implements SearchEngine<Doc> {
         break;
       }
 
-      childLogger.debug(
-        "All docs not yet indexes. %d/%d of documents are indexed. Waiting all documents to be indexed.",
-        body.num_published_docs,
-        numDocs
-      );
+      childLogger.debug("Indexing is still in progress...");
 
       await new Promise((r) => setTimeout(r, 1000));
     }

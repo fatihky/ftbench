@@ -70,7 +70,7 @@ export class BenchmarkFactory {
             meilisearchWikipediaArticleAbstract,
             quickwitWikipediaArticleAbstract,
           ],
-          documentCount: params.documents ?? 200000,
+          documentCount: params.documents,
           documentGenerator: wikipediaArticleAbstractGenerator,
           queryExecutorParams: {
             concurrency: params.concurrency,

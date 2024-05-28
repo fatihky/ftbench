@@ -91,10 +91,7 @@ export class MeiliSearchSearchEngine<Doc> implements SearchEngine<Doc> {
         break;
       }
 
-      childLogger.debug(
-        "%d tasks remaining, waiting them to be completed.",
-        body.results.length
-      );
+      childLogger.debug("Indexing is still in progress...");
 
       await new Promise((r) => setTimeout(r, 1000));
     }
