@@ -7,6 +7,7 @@ interface BenchmarkCommandArguments {
   concurrency: string;
   requests: string;
   documents?: string;
+  ingestChunkSize: string;
 
   datasetWikipediaArticleAbstractPath?: string;
 }
@@ -21,6 +22,7 @@ async function runBenchmark(opts: BenchmarkCommandArguments) {
       wikipediaArticleAbstractPath: opts.datasetWikipediaArticleAbstractPath,
     },
     documents: opts.documents ? Number(opts.documents) : undefined,
+    ingestChunkSize: Number(opts.ingestChunkSize),
     requests,
   });
 
@@ -45,5 +47,10 @@ new Command()
     "Path to Wikipedia article abstract xml dump"
   )
   .option("--documents <number>")
+  .option(
+    "--ingest-chunk-size <number>",
+    "Document indexing chunk size.",
+    "1000"
+  )
   .action(runBenchmark)
   .parse();

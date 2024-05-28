@@ -7,6 +7,7 @@ import { QueryExecutor, QueryExecutorParams } from "./query-executor";
 import { en } from "@faker-js/faker";
 
 export interface BenchmarkParams<Doc> {
+  ingestChunkSize?: number;
   engines: SearchEngine<Doc>[];
   queries: Query[];
   ignoreUnsupportedQueries: boolean;
@@ -16,6 +17,7 @@ export interface BenchmarkParams<Doc> {
 }
 
 export class Benchmark<Doc> {
+  private readonly ingestChunkSize = 1000;
   private engines: SearchEngine<Doc>[];
   private queries: Query[];
   private documentCount?: number;
@@ -28,6 +30,7 @@ export class Benchmark<Doc> {
     this.documentCount = params.documentCount;
     this.documentGenerator = params.documentGenerator;
     this.queryExecutor = new QueryExecutor(params.queryExecutorParams);
+    this.ingestChunkSize = 1000;
   }
 
   static create<D>(params: BenchmarkParams<D>): Benchmark<D> {
@@ -142,9 +145,9 @@ export class Benchmark<Doc> {
 
   private async insertDocs() {
     const docs = await this.generateDocs();
-    const chunks = makeChunks(docs, 1000);
+    const chunks = makeChunks(docs, this.ingestChunkSize);
 
-    logger.debug("Inserting %d docs as %d chunks.", docs.length, chunks.length);
+    logger.debug("Inserting %d docs in %d chunks.", docs.length, chunks.length);
 
     for (const chunk of chunks) {
       await Promise.all(
@@ -152,7 +155,7 @@ export class Benchmark<Doc> {
       );
     }
 
-    logger.debug("Wait engines to index the documents.");
+    logger.debug("Wait for engines to index the documents.");
 
     await Promise.all(
       this.engines.map((engine) =>

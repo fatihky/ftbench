@@ -12,7 +12,7 @@ interface BenchmarkFactoryParams {
   benchmark: string;
   requests: number;
   concurrency: number;
-
+  ingestChunkSize?: number;
   documents?: number;
 
   datasets?: {
@@ -35,6 +35,7 @@ export class BenchmarkFactory {
         });
 
         return Benchmark.create<Article>({
+          ingestChunkSize: params.ingestChunkSize,
           ignoreUnsupportedQueries: false,
           queries: allQueries,
           engines: [meilisearchArticles, quickwitArticles],
@@ -64,6 +65,7 @@ export class BenchmarkFactory {
           new WikipediaArticleAbstractGenerator(wikipediaArticleAbstractPath);
 
         return Benchmark.create<WikipediaArticleAbstract>({
+          ingestChunkSize: params.ingestChunkSize,
           ignoreUnsupportedQueries: true,
           queries: allQueries,
           engines: [
