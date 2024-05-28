@@ -5,6 +5,7 @@ import { WikipediaArticleAbstractGenerator } from "./document-generators/wikiped
 import { Article } from "./documents/article";
 import { WikipediaArticleAbstract } from "./documents/wikipedia-article-abstract";
 import { MeiliSearchSearchEngine } from "./engines/meilisearch";
+import { OpenSearchSearchEngine } from "./engines/opensearch";
 import { QuickwitSearchEngine } from "./engines/quickwit";
 import { allQueries } from "./query";
 
@@ -33,12 +34,16 @@ export class BenchmarkFactory {
           indexName: "articles",
           address: "http://localhost:7280",
         });
+        const opensearchArticles = new OpenSearchSearchEngine<Article>({
+          indexName: "articles",
+          address: "http://localhost:9200",
+        });
 
         return Benchmark.create<Article>({
           ingestChunkSize: params.ingestChunkSize,
           ignoreUnsupportedQueries: false,
           queries: allQueries,
-          engines: [meilisearchArticles, quickwitArticles],
+          engines: [opensearchArticles, meilisearchArticles, quickwitArticles],
           documentCount: params.documents ?? 100000,
           documentGenerator: new ArticleGenerator(),
           queryExecutorParams: { concurrency: 10, repeats: 10 },
@@ -58,6 +63,11 @@ export class BenchmarkFactory {
             indexName: "wikipedia-article-abstract",
             address: "http://localhost:7700",
           });
+        const opensearchWikipediaArticleAbstract =
+          new OpenSearchSearchEngine<WikipediaArticleAbstract>({
+            indexName: "wikipedia-article-abstract",
+            address: "http://localhost:9200",
+          });
 
         assert(wikipediaArticleAbstractPath);
 
@@ -69,6 +79,7 @@ export class BenchmarkFactory {
           ignoreUnsupportedQueries: true,
           queries: allQueries,
           engines: [
+            opensearchWikipediaArticleAbstract,
             meilisearchWikipediaArticleAbstract,
             quickwitWikipediaArticleAbstract,
           ],
